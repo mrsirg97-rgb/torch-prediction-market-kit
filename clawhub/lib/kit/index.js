@@ -19,7 +19,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 const web3_js_1 = require("@solana/web3.js");
-const torchsdk_1 = require("torchsdk");
+const torchsdk_1 = require("../torchsdk");
 const config_1 = require("./config");
 const utils_1 = require("./utils");
 const markets_1 = require("./markets");
