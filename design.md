@@ -1,6 +1,6 @@
 # Torch Prediction Market Kit — Design Document
 
-> Autonomous vault-based prediction market bot for Torch Market on Solana. Version 1.0.0.
+> Autonomous vault-based prediction market bot for Torch Market on Solana. Version 1.0.1.
 
 ## Overview
 

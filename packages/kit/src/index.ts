@@ -20,7 +20,7 @@
 import { Connection, Keypair } from '@solana/web3.js'
 import { getVault, getVaultForWallet } from 'torchsdk'
 import { loadConfig } from './config'
-import { sol, createLogger, decodeBase58 } from './utils'
+import { sol, createLogger, decodeBase58, withTimeout } from './utils'
 import { loadMarkets, saveMarkets, createMarket, snapshotMarket, resolveMarket } from './markets'
 import type { Market } from './types'
 
@@ -134,14 +134,14 @@ const main = async () => {
   console.log()
 
   // verify vault exists
-  const vault = await getVault(connection, config.vaultCreator)
+  const vault = await withTimeout(getVault(connection, config.vaultCreator), 30_000, 'getVault')
   if (!vault) {
     throw new Error(`vault not found for creator ${config.vaultCreator}`)
   }
   log('info', `vault found — authority=${vault.authority}`)
 
   // verify agent wallet is linked to vault
-  const link = await getVaultForWallet(connection, agentKeypair.publicKey.toBase58())
+  const link = await withTimeout(getVaultForWallet(connection, agentKeypair.publicKey.toBase58()), 30_000, 'getVaultForWallet')
   if (!link) {
     console.log()
     console.log('--- ACTION REQUIRED ---')

@@ -3,11 +3,18 @@
  * utils.ts — shared helpers.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.decodeBase58 = exports.sol = void 0;
+exports.decodeBase58 = exports.withTimeout = exports.sol = void 0;
 exports.createLogger = createLogger;
 const torchsdk_1 = require("torchsdk");
 const sol = (lamports) => (lamports / torchsdk_1.LAMPORTS_PER_SOL).toFixed(4);
 exports.sol = sol;
+const withTimeout = (promise, ms, label) => {
+    return new Promise((resolve, reject) => {
+        const timer = setTimeout(() => reject(new Error(`timeout after ${ms}ms: ${label}`)), ms);
+        promise.then((val) => { clearTimeout(timer); resolve(val); }, (err) => { clearTimeout(timer); reject(err); });
+    });
+};
+exports.withTimeout = withTimeout;
 // base58 decoder — avoids ESM-only bs58 dependency
 const B58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 const decodeBase58 = (s) => {

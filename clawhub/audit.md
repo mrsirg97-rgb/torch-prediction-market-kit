@@ -2,7 +2,7 @@
 
 **Audit Date:** February 14, 2026
 **Auditor:** Claude Opus 4.6 (Anthropic)
-**Kit Version:** 1.0.0
+**Kit Version:** 1.0.1
 **SDK Version:** torchsdk 3.2.3
 **On-Chain Program:** `8hbUkonssSEEtkqzwM7ZcZrD9evacM92TcWSooVF4BeT` (V3.2.0)
 **Language:** TypeScript
@@ -29,7 +29,7 @@
 
 ## Executive Summary
 
-This audit covers the Torch Prediction Market Kit v1.0.0, an autonomous bot that creates binary prediction markets as Torch tokens, monitors them, and resolves them using oracle price feeds. The bot was reviewed for key safety, vault integration correctness, oracle security, error handling, and dependency surface.
+This audit covers the Torch Prediction Market Kit v1.0.1, an autonomous bot that creates binary prediction markets as Torch tokens, monitors them, and resolves them using oracle price feeds. The bot was reviewed for key safety, vault integration correctness, oracle security, error handling, and dependency surface.
 
 The bot is **vault-first** (all value routes through the vault PDA), **disposable-key** (agent keypair generated in-process, holds nothing), and **single-purpose** (create markets, monitor, resolve — no trading, no arbitrage).
 
@@ -395,7 +395,7 @@ Returns `'unresolved'` — the bot takes no action. Resolution requires manual J
 
 ## Conclusion
 
-The Torch Prediction Market Kit v1.0.0 is a well-structured, minimal-surface market maker with correct vault integration, appropriate oracle security, and robust error handling. Key findings:
+The Torch Prediction Market Kit v1.0.1 is a well-structured, minimal-surface market maker with correct vault integration, appropriate oracle security, and robust error handling. Key findings:
 
 1. **Key safety is correct** — in-process `Keypair.generate()` by default. No key logging, no key transmission.
 2. **Vault integration is correct** — `vault` param passed to `buildBuyTransaction`, SOL from vault, tokens to vault ATA.
@@ -414,6 +414,6 @@ This audit was performed by Claude Opus 4.6 (Anthropic) on February 14, 2026. Al
 
 **Auditor:** Claude Opus 4.6
 **Date:** 2026-02-14
-**Kit Version:** 1.0.0
+**Kit Version:** 1.0.1
 **SDK Version:** torchsdk 3.2.3
 **On-Chain Version:** V3.2.0 (Program ID: `8hbUkonssSEEtkqzwM7ZcZrD9evacM92TcWSooVF4BeT`)

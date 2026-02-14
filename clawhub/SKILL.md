@@ -1,6 +1,6 @@
 ---
 name: torch-prediction-market-bot
-version: "1.0.0"
+version: "1.0.1"
 description: Autonomous vault-based prediction market bot for Torch Market on Solana. Creates binary prediction markets as Torch tokens — the bonding curve provides price discovery, the treasury accumulates value from trading fees, and the vault manages positions. Each market has an oracle (price feed or manual) and resolves at a deadline. The agent keypair is generated in-process -- disposable, holds nothing of value. All SOL routes through the vault. The human principal creates the vault, funds it, links the agent, and retains full control. Built on torchsdk v3.2.3 and the Torch Market protocol.
 license: MIT
 disable-model-invocation: true
@@ -24,11 +24,11 @@ metadata:
     install:
       - id: torch-prediction-market-kit
         kind: npm
-        package: torch-prediction-market-kit@^1.0.0
+        package: torch-prediction-market-kit@^1.0.1
         flags: []
         label: "Install Torch Prediction Market Kit (npm, optional -- SDK is bundled in lib/torchsdk/ and bot source is bundled under lib/kit on clawhub)"
   author: torch-market
-  version: "1.0.0"
+  version: "1.0.1"
   clawhub: https://clawhub.ai/mrsirg97-rgb/torch-prediction-market-kit
   kit-source: https://github.com/mrsirg97-rgb/torch-prediction-market-kit
   website: https://torch.market
@@ -152,7 +152,7 @@ If the agent keypair is compromised, the attacker gets dust and vault access tha
 ### 1. Install
 
 ```bash
-npm install torch-prediction-market-kit@1.0.0
+npm install torch-prediction-market-kit@1.0.1
 ```
 
 Or use the bundled source from ClawHub — the Torch SDK is included in `lib/torchsdk/` and the bot source is in `lib/kit/`.
@@ -239,7 +239,7 @@ packages/kit/src/
 ├── types.ts      — Market, Oracle, MarketSnapshot, BotConfig interfaces
 ├── markets.ts    — loadMarkets(), saveMarkets(), createMarket(), snapshotMarket(), resolveMarket()
 ├── oracle.ts     — checkPriceFeed(), checkOracle() — CoinGecko price resolution
-└── utils.ts      — sol(), createLogger(), decodeBase58()
+└── utils.ts      — sol(), createLogger(), decodeBase58(), withTimeout()
 ```
 
 The bot is ~280 lines of TypeScript across 6 modules. It does three things: create markets, monitor them, and resolve them through the vault.
@@ -512,6 +512,15 @@ pnpm test
 - Security Audit: [torch.market/audit.md](https://torch.market/audit.md)
 - Website: [torch.market](https://torch.market)
 - Program ID: `8hbUkonssSEEtkqzwM7ZcZrD9evacM92TcWSooVF4BeT`
+
+---
+
+## Changelog
+
+### v1.0.1
+
+- **Timeout on all external calls.** Every SDK, RPC, and API call is now wrapped with a 30-second timeout (10 seconds for CoinGecko). If an RPC endpoint or CoinGecko becomes unresponsive, the call fails fast with a descriptive error instead of stalling the bot indefinitely. Addresses audit finding L-1.
+- **Market ID uniqueness validation.** `loadMarkets()` now rejects `markets.json` files containing duplicate market IDs on load, preventing unintended duplicate market creation and wasted vault SOL. Addresses audit finding L-2.
 
 ---
 

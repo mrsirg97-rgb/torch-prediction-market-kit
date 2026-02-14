@@ -11,7 +11,7 @@ const COINGECKO_API = 'https://api.coingecko.com/api/v3/simple/price'
 
 export const checkPriceFeed = async (oracle: PriceFeedOracle): Promise<Outcome> => {
   const url = `${COINGECKO_API}?ids=${oracle.asset}&vs_currencies=usd`
-  const res = await fetch(url)
+  const res = await fetch(url, { signal: AbortSignal.timeout(10_000) })
 
   if (!res.ok) {
     throw new Error(`CoinGecko API error: ${res.status} ${res.statusText}`)

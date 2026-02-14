@@ -7,6 +7,16 @@ import type { LogLevel } from './types'
 
 export const sol = (lamports: number) => (lamports / LAMPORTS_PER_SOL).toFixed(4)
 
+export const withTimeout = <T>(promise: Promise<T>, ms: number, label: string): Promise<T> => {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(`timeout after ${ms}ms: ${label}`)), ms)
+    promise.then(
+      (val) => { clearTimeout(timer); resolve(val) },
+      (err) => { clearTimeout(timer); reject(err) },
+    )
+  })
+}
+
 // base58 decoder — avoids ESM-only bs58 dependency
 const B58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
 

@@ -16,6 +16,9 @@ import {
 } from 'torchsdk'
 import type { MarketDefinition, Market, MarketSnapshot, Outcome } from './types'
 import { checkOracle } from './oracle'
+import { withTimeout } from './utils'
+
+const SDK_TIMEOUT_MS = 30_000
 
 export const loadMarkets = (path: string): Market[] => {
   if (!fs.existsSync(path)) return []
@@ -23,7 +26,7 @@ export const loadMarkets = (path: string): Market[] => {
   const raw = fs.readFileSync(path, 'utf-8')
   const definitions: (MarketDefinition & Partial<Market>)[] = JSON.parse(raw)
 
-  return definitions.map((d) => ({
+  const markets = definitions.map((d) => ({
     ...d,
     mint: d.mint ?? null,
     status: d.status ?? 'pending',
@@ -31,6 +34,16 @@ export const loadMarkets = (path: string): Market[] => {
     createdAt: d.createdAt ?? null,
     resolvedAt: d.resolvedAt ?? null,
   }))
+
+  const seen = new Set<string>()
+  for (const m of markets) {
+    if (seen.has(m.id)) {
+      throw new Error(`duplicate market id: "${m.id}" in ${path}`)
+    }
+    seen.add(m.id)
+  }
+
+  return markets
 }
 
 export const saveMarkets = (path: string, markets: Market[]): void => {
@@ -44,32 +57,56 @@ export const createMarket = async (
   vaultCreator: string,
 ): Promise<string> => {
   // create the torch token
-  const createResult = await buildCreateTokenTransaction(connection, {
-    creator: agentKeypair.publicKey.toBase58(),
-    name: market.name,
-    symbol: market.symbol,
-    metadata_uri: market.metadataUri,
-  })
+  const createResult = await withTimeout(
+    buildCreateTokenTransaction(connection, {
+      creator: agentKeypair.publicKey.toBase58(),
+      name: market.name,
+      symbol: market.symbol,
+      metadata_uri: market.metadataUri,
+    }),
+    SDK_TIMEOUT_MS,
+    'buildCreateTokenTransaction',
+  )
 
   createResult.transaction.sign(agentKeypair)
-  const createSig = await connection.sendRawTransaction(createResult.transaction.serialize())
-  await confirmTransaction(connection, createSig, agentKeypair.publicKey.toBase58())
+  const createSig = await withTimeout(
+    connection.sendRawTransaction(createResult.transaction.serialize()),
+    SDK_TIMEOUT_MS,
+    'sendRawTransaction(create)',
+  )
+  await withTimeout(
+    confirmTransaction(connection, createSig, agentKeypair.publicKey.toBase58()),
+    SDK_TIMEOUT_MS,
+    'confirmTransaction(create)',
+  )
 
   const mintAddress = createResult.mint.toBase58()
 
   // seed liquidity via vault buy
   if (market.initialLiquidityLamports > 0) {
-    const buyResult = await buildBuyTransaction(connection, {
-      mint: mintAddress,
-      buyer: agentKeypair.publicKey.toBase58(),
-      amount_sol: market.initialLiquidityLamports,
-      slippage_bps: 500,
-      vault: vaultCreator,
-    })
+    const buyResult = await withTimeout(
+      buildBuyTransaction(connection, {
+        mint: mintAddress,
+        buyer: agentKeypair.publicKey.toBase58(),
+        amount_sol: market.initialLiquidityLamports,
+        slippage_bps: 500,
+        vault: vaultCreator,
+      }),
+      SDK_TIMEOUT_MS,
+      'buildBuyTransaction',
+    )
 
     buyResult.transaction.sign(agentKeypair)
-    const buySig = await connection.sendRawTransaction(buyResult.transaction.serialize())
-    await confirmTransaction(connection, buySig, agentKeypair.publicKey.toBase58())
+    const buySig = await withTimeout(
+      connection.sendRawTransaction(buyResult.transaction.serialize()),
+      SDK_TIMEOUT_MS,
+      'sendRawTransaction(buy)',
+    )
+    await withTimeout(
+      confirmTransaction(connection, buySig, agentKeypair.publicKey.toBase58()),
+      SDK_TIMEOUT_MS,
+      'confirmTransaction(buy)',
+    )
   }
 
   return mintAddress
@@ -81,8 +118,8 @@ export const snapshotMarket = async (
 ): Promise<MarketSnapshot | null> => {
   if (!market.mint) return null
 
-  const token = await getToken(connection, market.mint)
-  const { holders: holdersList } = await getHolders(connection, market.mint)
+  const token = await withTimeout(getToken(connection, market.mint), SDK_TIMEOUT_MS, 'getToken')
+  const { holders: holdersList } = await withTimeout(getHolders(connection, market.mint), SDK_TIMEOUT_MS, 'getHolders')
 
   return {
     marketId: market.id,
