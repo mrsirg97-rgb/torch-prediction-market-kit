@@ -5,7 +5,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.decodeBase58 = exports.withTimeout = exports.sol = void 0;
 exports.createLogger = createLogger;
-const torchsdk_1 = require("../torchsdk");
+const torchsdk_1 = require("torchsdk");
 const sol = (lamports) => (lamports / torchsdk_1.LAMPORTS_PER_SOL).toFixed(4);
 exports.sol = sol;
 const withTimeout = (promise, ms, label) => {

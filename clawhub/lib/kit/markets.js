@@ -41,7 +41,7 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.resolveMarket = exports.snapshotMarket = exports.createMarket = exports.saveMarkets = exports.loadMarkets = void 0;
 const fs = __importStar(require("fs"));
-const torchsdk_1 = require("../torchsdk");
+const torchsdk_1 = require("torchsdk");
 const oracle_1 = require("./oracle");
 const utils_1 = require("./utils");
 const SDK_TIMEOUT_MS = 30000;

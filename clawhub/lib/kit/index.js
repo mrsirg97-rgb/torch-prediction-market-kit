@@ -18,11 +18,14 @@
  *   MARKETS_PATH      — path to markets JSON file (default ./markets.json)
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.withTimeout = void 0;
 const web3_js_1 = require("@solana/web3.js");
-const torchsdk_1 = require("../torchsdk");
+const torchsdk_1 = require("torchsdk");
 const config_1 = require("./config");
 const utils_1 = require("./utils");
 const markets_1 = require("./markets");
+var utils_2 = require("./utils");
+Object.defineProperty(exports, "withTimeout", { enumerable: true, get: function () { return utils_2.withTimeout; } });
 // ---------------------------------------------------------------------------
 // market cycle — create pending, snapshot active, resolve expired
 // ---------------------------------------------------------------------------
