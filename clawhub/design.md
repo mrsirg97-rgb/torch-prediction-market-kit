@@ -1,6 +1,6 @@
 # Torch Prediction Market Kit — Design Document
 
-> Autonomous vault-based prediction market bot for Torch Market on Solana. Version 1.0.0.
+> Autonomous vault-based prediction market bot for Torch Market on Solana. Version 2.0.0.
 
 ## Overview
 
@@ -8,7 +8,7 @@ The Torch Prediction Market Kit is a single-purpose bot that creates binary pred
 
 **Settlement model: token-as-signal.** No payout mechanism. The token price IS the prediction. Buying = betting YES, selling = betting NO. At resolution, the bot records the outcome. The bonding curve and treasury do the work.
 
-The bot is built on `torchsdk@3.2.3` and targets the Torch Market on-chain program (`8hbUkonssSEEtkqzwM7ZcZrD9evacM92TcWSooVF4BeT`). It uses the SDK's `buildCreateTokenTransaction` and `buildBuyTransaction` for market creation, `getToken` and `getHolders` for monitoring, and CoinGecko for oracle resolution.
+The bot is built on `torchsdk@3.7.22` and targets the Torch Market on-chain program (`8hbUkonssSEEtkqzwM7ZcZrD9evacM92TcWSooVF4BeT`). It uses the SDK's `buildCreateTokenTransaction` and `buildBuyTransaction` for market creation, `getToken` and `getHolders` for monitoring, and CoinGecko for oracle resolution.
 
 ## Architecture
 
@@ -36,7 +36,7 @@ The bot is built on `torchsdk@3.2.3` and targets the Torch Market on-chain progr
                            │
                            ▼
 ┌──────────────────────────────────────────────────────────┐
-│                    torchsdk v3.2.3                         │
+│                    torchsdk v3.7.22                        │
 │                                                           │
 │  Read-only: getTokens, getToken, getHolders, getVault     │
 │  Builders:  buildCreateTokenTransaction, buildBuyTransaction│
@@ -202,7 +202,7 @@ interface BotConfig {
 | Package | Version | Purpose |
 |---------|---------|---------|
 | `@solana/web3.js` | 1.98.4 | Connection, Keypair, Transaction, sendRawTransaction |
-| `torchsdk` | 3.2.3 | Token queries, token creation, buy builder, vault queries, confirmation |
+| `torchsdk` | 3.7.22 | Token queries, token creation, buy builder, vault queries, confirmation |
 
 | Dev Package | Version | Purpose |
 |-------------|---------|---------|

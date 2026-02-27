@@ -1,34 +1,45 @@
 ---
 name: torch-prediction-market-bot
-version: "1.0.2"
-description: Autonomous vault-based prediction market bot for Torch Market on Solana. Creates binary prediction markets as Torch tokens — the bonding curve provides price discovery, the treasury accumulates value from trading fees, and the vault manages positions. Each market has an oracle (price feed or manual) and resolves at a deadline. The agent keypair is generated in-process -- disposable, holds nothing of value. All SOL routes through the vault. The human principal creates the vault, funds it, links the agent, and retains full control. Built on torchsdk v3.2.3 and the Torch Market protocol.
+version: "2.0.0"
+description: Autonomous vault-based prediction market bot for Torch Market on Solana. Creates binary prediction markets as Torch tokens — the bonding curve provides price discovery, the treasury accumulates value from trading fees, and the vault manages positions. Each market has an oracle (price feed or manual) and resolves at a deadline. The agent keypair is generated in-process -- disposable, holds nothing of value. All SOL routes through the vault. The human principal creates the vault, funds it, links the agent, and retains full control. Built on torchsdk v3.7.22 and the Torch Market protocol.
 license: MIT
 disable-model-invocation: true
 requires:
   env:
-    - SOLANA_RPC_URL
-    - VAULT_CREATOR
+    - name: SOLANA_RPC_URL
+      required: true
+    - name: VAULT_CREATOR
+      required: true
+    - name: SOLANA_PRIVATE_KEY
+      required: false
 metadata:
   clawdbot:
     requires:
       env:
-        - SOLANA_RPC_URL
-        - VAULT_CREATOR
-    primaryEnv: SOLANA_RPC_URL
+        - name: SOLANA_RPC_URL
+          required: true
+        - name: VAULT_CREATOR
+          required: true
+        - name: SOLANA_PRIVATE_KEY
+          required: false
   openclaw:
     requires:
       env:
-        - SOLANA_RPC_URL
-        - VAULT_CREATOR
+        - name: SOLANA_RPC_URL
+          required: true
+        - name: VAULT_CREATOR
+          required: true
+        - name: SOLANA_PRIVATE_KEY
+          required: false
     primaryEnv: SOLANA_RPC_URL
     install:
       - id: torch-prediction-market-kit
         kind: npm
-        package: torch-prediction-market-kit@^1.0.1
+        package: torch-prediction-market-kit@^2.0.0
         flags: []
         label: "Install Torch Prediction Market Kit (npm, optional -- SDK is bundled in lib/torchsdk/ and bot source is bundled under lib/kit on clawhub)"
   author: torch-market
-  version: "1.0.2"
+  version: "2.0.0"
   clawhub: https://clawhub.ai/mrsirg97-rgb/torch-prediction-market-kit
   kit-source: https://github.com/mrsirg97-rgb/torch-prediction-market-kit
   website: https://torch.market
@@ -61,7 +72,13 @@ metadata:
     - prediction-markets
     - agent-infrastructure
     - custody-solutions
-compatibility: Requires SOLANA_RPC_URL (HTTPS Solana RPC endpoint) and VAULT_CREATOR (vault creator pubkey) as environment variables. SOLANA_PRIVATE_KEY is optional -- the kit generates a fresh disposable keypair in-process if not provided. The agent wallet holds nothing of value (~0.01 SOL for gas). All token creation and seed liquidity SOL routes through the vault. The vault can be created and funded entirely by the human principal. The Torch SDK is bundled in lib/torchsdk/ -- all source included for full auditability. No API server dependency. Oracle resolution uses CoinGecko public API (read-only, no key required).
+compatibility: >-
+  REQUIRED: SOLANA_RPC_URL (HTTPS Solana RPC endpoint)
+  REQUIRED: VAULT_CREATOR (vault creator pubkey).
+  OPTIONAL: SOLANA_PRIVATE_KEY -- the kit generates a fresh disposable keypair in-process if not provided. The agent wallet holds nothing of value (~0.01 SOL for gas). All token creation and seed liquidity SOL routes through the vault. The vault can be created and funded entirely by the human principal.
+  This skill sets disable-model-invocation: true -- it must not be invoked autonomously without explicit user initiation.
+  The Torch SDK is bundled in lib/torchsdk/ -- all source included for full auditability. No API server dependency.
+  Oracle resolution uses CoinGecko public API (read-only, no key required). The vault can be created and funded entirely by the human principal -- the agent never needs access to funds.
 ---
 
 # Torch Prediction Market Kit
@@ -152,7 +169,7 @@ If the agent keypair is compromised, the attacker gets dust and vault access tha
 ### 1. Install
 
 ```bash
-npm install torch-prediction-market-kit@1.0.1
+npm install torch-prediction-market-kit@2.0.0
 ```
 
 Or use the bundled source from ClawHub — the Torch SDK is included in `lib/torchsdk/` and the bot source is in `lib/kit/`.
@@ -249,7 +266,7 @@ The bot is ~280 lines of TypeScript across 6 modules. It does three things: crea
 | Package | Version | Purpose |
 |---------|---------|---------|
 | `@solana/web3.js` | 1.98.4 | Solana RPC, keypair, transaction |
-| `torchsdk` | 3.2.3 | Token queries, token creation, buy builder, vault queries |
+| `torchsdk` | 3.7.22 | Token queries, token creation, buy builder, vault queries |
 
 Two runtime dependencies. Both pinned to exact versions. No `^` or `~` ranges.
 
@@ -404,6 +421,10 @@ The agent never needs the authority's private key. The authority never needs the
 3. **Never embed keys in source code or logs.** The agent pubkey is printed — the secret key is never exposed.
 4. **Use a secure RPC endpoint.** Default to a private RPC provider. Never use an unencrypted HTTP endpoint for mainnet transactions.
 
+### RPC Timeout
+
+All SDK calls are wrapped with a 30-second timeout (`withTimeout` in utils.ts). A hanging or unresponsive RPC endpoint cannot stall the bot indefinitely — the call rejects, the error is caught by the market cycle loop, and the bot continues to the next market or cycle.
+
 ### Environment Variables
 
 | Variable | Required | Purpose |
@@ -516,6 +537,12 @@ pnpm test
 ---
 
 ## Changelog
+
+### v2.0.0
+
+- **Upgraded torchsdk from 3.2.3 to 3.7.22.** Major SDK update adds treasury lock PDAs (V27), dynamic Raydium network detection, auto-migration bundling on bonding curve completion (`buildBuyTransaction` now returns optional `migrationTransaction`), vault-routed Raydium CPMM swaps (`buildVaultSwapTransaction`), Token-2022 fee harvesting (`buildHarvestFeesTransaction`, `buildSwapFeesToSolTransaction`), bulk loan scanning (`getAllLoanPositions`), on-chain token metadata queries (`getTokenMetadata`), and ephemeral agent keypair factory (`createEphemeralAgent`).
+- **Exported `withTimeout` utility.** The timeout helper used internally by the bot is now a public export of the kit package, available to downstream consumers.
+- **Updated env format in skill frontmatter.** Environment variable declarations now use structured `name`/`required` format for compatibility with ClawHub and OpenClaw agent runners.
 
 ### v1.0.2
 

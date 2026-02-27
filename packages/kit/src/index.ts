@@ -24,6 +24,8 @@ import { sol, createLogger, decodeBase58, withTimeout } from './utils'
 import { loadMarkets, saveMarkets, createMarket, snapshotMarket, resolveMarket } from './markets'
 import type { Market } from './types'
 
+export { withTimeout } from './utils'
+
 // ---------------------------------------------------------------------------
 // market cycle — create pending, snapshot active, resolve expired
 // ---------------------------------------------------------------------------
