@@ -1,7 +1,7 @@
 {
   "name": "Torch Prediction Market Kit",
-  "description": "Autonomous vault-based prediction market bot for Torch Market on Solana. Creates binary prediction markets as Torch tokens — the bonding curve provides price discovery, the treasury accumulates value from trading fees, and the vault manages positions. Each market has an oracle (price feed or manual) and resolves at a deadline. The agent keypair is generated in-process -- disposable, holds nothing of value. All SOL routes through the vault. The human principal creates the vault, funds it, links the agent, and retains full control. Built on torchsdk v3.7.22 and the Torch Market protocol.",
-  "version": "2.0.0",
+  "description": "Autonomous vault-based prediction market bot for Torch Market on Solana. Creates binary prediction markets as Torch tokens — the bonding curve provides price discovery, the treasury accumulates value from trading fees, and the vault manages positions. Each market has an oracle (price feed or manual) and resolves at a deadline. The agent keypair is generated in-process -- disposable, holds nothing of value. All SOL routes through the vault. The human principal creates the vault, funds it, links the agent, and retains full control. Built on torchsdk v3.7.23 and the Torch Market protocol.",
+  "version": "2.0.1",
   "type": "protocol",
   "disable-model-invocation": true,
   "website": "https://torch.market",
@@ -45,7 +45,7 @@
       {
         "id": "npm-torch-prediction-market-kit",
         "kind": "npm",
-        "package": "torch-prediction-market-kit@^1.0.0",
+        "package": "torch-prediction-market-kit@^2.0.1",
         "flags": [],
         "label": "Install Torch Prediction Market Kit (npm, optional -- SDK is bundled in lib/torchsdk/ and bot source is bundled under lib/kit on clawhub)"
       }
@@ -122,7 +122,7 @@
   ],
   "constants": {
     "bonding_curve_treasury_percent": 10,
-    "token_2022_transfer_fee_percent": 1,
+    "token_2022_transfer_fee_bps": 4,
     "graduation_threshold_sol": 200,
     "default_scan_interval_ms": 60000,
     "min_scan_interval_ms": 5000,

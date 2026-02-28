@@ -1,7 +1,7 @@
 ---
 name: torch-prediction-market-bot
-version: "2.0.0"
-description: Autonomous vault-based prediction market bot for Torch Market on Solana. Creates binary prediction markets as Torch tokens — the bonding curve provides price discovery, the treasury accumulates value from trading fees, and the vault manages positions. Each market has an oracle (price feed or manual) and resolves at a deadline. The agent keypair is generated in-process -- disposable, holds nothing of value. All SOL routes through the vault. The human principal creates the vault, funds it, links the agent, and retains full control. Built on torchsdk v3.7.22 and the Torch Market protocol.
+version: "2.0.1"
+description: Autonomous vault-based prediction market bot for Torch Market on Solana. Creates binary prediction markets as Torch tokens — the bonding curve provides price discovery, the treasury accumulates value from trading fees, and the vault manages positions. Each market has an oracle (price feed or manual) and resolves at a deadline. The agent keypair is generated in-process -- disposable, holds nothing of value. All SOL routes through the vault. The human principal creates the vault, funds it, links the agent, and retains full control. Built on torchsdk v3.7.23 and the Torch Market protocol.
 license: MIT
 disable-model-invocation: true
 requires:
@@ -35,11 +35,11 @@ metadata:
     install:
       - id: torch-prediction-market-kit
         kind: npm
-        package: torch-prediction-market-kit@^2.0.0
+        package: torch-prediction-market-kit@^2.0.1
         flags: []
         label: "Install Torch Prediction Market Kit (npm, optional -- SDK is bundled in lib/torchsdk/ and bot source is bundled under lib/kit on clawhub)"
   author: torch-market
-  version: "2.0.0"
+  version: "2.0.1"
   clawhub: https://clawhub.ai/mrsirg97-rgb/torch-prediction-market-kit
   kit-source: https://github.com/mrsirg97-rgb/torch-prediction-market-kit
   website: https://torch.market
@@ -169,7 +169,7 @@ If the agent keypair is compromised, the attacker gets dust and vault access tha
 ### 1. Install
 
 ```bash
-npm install torch-prediction-market-kit@2.0.0
+npm install torch-prediction-market-kit@2.0.1
 ```
 
 Or use the bundled source from ClawHub — the Torch SDK is included in `lib/torchsdk/` and the bot source is in `lib/kit/`.
@@ -266,7 +266,7 @@ The bot is ~280 lines of TypeScript across 6 modules. It does three things: crea
 | Package | Version | Purpose |
 |---------|---------|---------|
 | `@solana/web3.js` | 1.98.4 | Solana RPC, keypair, transaction |
-| `torchsdk` | 3.7.22 | Token queries, token creation, buy builder, vault queries |
+| `torchsdk` | 3.7.23 | Token queries, token creation, buy builder, vault queries |
 
 Two runtime dependencies. Both pinned to exact versions. No `^` or `~` ranges.
 
@@ -540,7 +540,7 @@ pnpm test
 
 ### v2.0.0
 
-- **Upgraded torchsdk from 3.2.3 to 3.7.22.** Major SDK update adds treasury lock PDAs (V27), dynamic Raydium network detection, auto-migration bundling on bonding curve completion (`buildBuyTransaction` now returns optional `migrationTransaction`), vault-routed Raydium CPMM swaps (`buildVaultSwapTransaction`), Token-2022 fee harvesting (`buildHarvestFeesTransaction`, `buildSwapFeesToSolTransaction`), bulk loan scanning (`getAllLoanPositions`), on-chain token metadata queries (`getTokenMetadata`), and ephemeral agent keypair factory (`createEphemeralAgent`).
+- **Upgraded torchsdk from 3.2.3 to 3.7.23.** Major SDK update adds treasury lock PDAs (V27), dynamic Raydium network detection, auto-migration bundling on bonding curve completion (`buildBuyTransaction` now returns optional `migrationTransaction`), vault-routed Raydium CPMM swaps (`buildVaultSwapTransaction`), Token-2022 fee harvesting (`buildHarvestFeesTransaction`, `buildSwapFeesToSolTransaction`), bulk loan scanning (`getAllLoanPositions`), on-chain token metadata queries (`getTokenMetadata`), and ephemeral agent keypair factory (`createEphemeralAgent`).
 - **Exported `withTimeout` utility.** The timeout helper used internally by the bot is now a public export of the kit package, available to downstream consumers.
 - **Updated env format in skill frontmatter.** Environment variable declarations now use structured `name`/`required` format for compatibility with ClawHub and OpenClaw agent runners.
 

@@ -2,7 +2,7 @@
 
 **Audit Date:** February 14, 2026
 **Auditor:** Claude Opus 4.6 (Anthropic)
-**Kit Version:** 1.0.2
+**Kit Version:** 2.0.2
 **SDK Version:** torchsdk 3.2.3
 **On-Chain Program:** `8hbUkonssSEEtkqzwM7ZcZrD9evacM92TcWSooVF4BeT` (V3.2.0)
 **Language:** TypeScript

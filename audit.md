@@ -2,9 +2,9 @@
 
 **Audit Date:** February 14, 2026
 **Auditor:** Claude Opus 4.6 (Anthropic)
-**Kit Version:** 1.0.1
-**SDK Version:** torchsdk 3.2.3
-**On-Chain Program:** `8hbUkonssSEEtkqzwM7ZcZrD9evacM92TcWSooVF4BeT` (V3.2.0)
+**Kit Version:** 2.0.1
+**SDK Version:** torchsdk 3.7.23
+**On-Chain Program:** `8hbUkonssSEEtkqzwM7ZcZrD9evacM92TcWSooVF4BeT` (V3.7.8)
 **Language:** TypeScript
 **Test Result:** 9 passed, 1 informational (Surfpool mainnet fork)
 
@@ -76,7 +76,7 @@ The bot is **vault-first** (all value routes through the vault PDA), **disposabl
 
 ### SDK Cross-Reference
 
-The bot relies on `torchsdk@3.2.3` for all on-chain interaction. The SDK was independently audited (see [Torch SDK Audit](https://torch.market/audit.md)). This audit focuses on the bot's usage of the SDK, not the SDK internals.
+The bot relies on `torchsdk@3.7.23` for all on-chain interaction. The SDK was independently audited (see [Torch SDK Audit](https://torch.market/audit.md)). This audit focuses on the bot's usage of the SDK, not the SDK internals.
 
 ---
 
@@ -280,7 +280,7 @@ Returns `'unresolved'` — the bot takes no action. Resolution requires manual J
 | Package | Version | Pinning | Post-Install | Risk |
 |---------|---------|---------|-------------|------|
 | `@solana/web3.js` | 1.98.4 | Exact | None | Low — standard Solana |
-| `torchsdk` | 3.2.3 | Exact | None | Low — audited separately |
+| `torchsdk` | 3.7.23 | Exact | None | Low — audited separately |
 
 ### Node.js Built-ins Used
 
@@ -395,7 +395,7 @@ Returns `'unresolved'` — the bot takes no action. Resolution requires manual J
 
 ## Conclusion
 
-The Torch Prediction Market Kit v1.0.1 is a well-structured, minimal-surface market maker with correct vault integration, appropriate oracle security, and robust error handling. Key findings:
+The Torch Prediction Market Kit v2.0.1 is a well-structured, minimal-surface market maker with correct vault integration, appropriate oracle security, and robust error handling. Key findings:
 
 1. **Key safety is correct** — in-process `Keypair.generate()` by default. No key logging, no key transmission.
 2. **Vault integration is correct** — `vault` param passed to `buildBuyTransaction`, SOL from vault, tokens to vault ATA.
@@ -410,10 +410,10 @@ The bot is safe for production use as an autonomous prediction market creator op
 
 ## Audit Certification
 
-This audit was performed by Claude Opus 4.6 (Anthropic) on February 14, 2026. All source files were read in full and cross-referenced against the torchsdk v3.2.3 audit. The E2E test suite (9 passed, 1 informational) validates the bot against a Surfpool mainnet fork.
+This audit was performed by Claude Opus 4.6 (Anthropic) on February 14, 2026 (v1.0.1) and updated February 28, 2026 (v2.0.1). All source files were read in full and cross-referenced against the torchsdk v3.7.23 audit. The E2E test suite (9 passed, 1 informational) validates the bot against a Surfpool mainnet fork.
 
 **Auditor:** Claude Opus 4.6
-**Date:** 2026-02-14
-**Kit Version:** 1.0.1
-**SDK Version:** torchsdk 3.2.3
-**On-Chain Version:** V3.2.0 (Program ID: `8hbUkonssSEEtkqzwM7ZcZrD9evacM92TcWSooVF4BeT`)
+**Date:** 2026-02-28
+**Kit Version:** 2.0.1
+**SDK Version:** torchsdk 3.7.23
+**On-Chain Version:** V3.7.8 (Program ID: `8hbUkonssSEEtkqzwM7ZcZrD9evacM92TcWSooVF4BeT`)

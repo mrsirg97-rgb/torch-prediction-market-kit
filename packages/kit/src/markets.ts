@@ -107,6 +107,21 @@ export const createMarket = async (
       SDK_TIMEOUT_MS,
       'confirmTransaction(buy)',
     )
+
+    // v3.7.22: if the buy completed the bonding curve, send the migration transaction
+    if (buyResult.migrationTransaction) {
+      buyResult.migrationTransaction.sign(agentKeypair)
+      const migSig = await withTimeout(
+        connection.sendRawTransaction(buyResult.migrationTransaction.serialize()),
+        SDK_TIMEOUT_MS,
+        'sendRawTransaction(migrate)',
+      )
+      await withTimeout(
+        confirmTransaction(connection, migSig, agentKeypair.publicKey.toBase58()),
+        SDK_TIMEOUT_MS,
+        'confirmTransaction(migrate)',
+      )
+    }
   }
 
   return mintAddress
