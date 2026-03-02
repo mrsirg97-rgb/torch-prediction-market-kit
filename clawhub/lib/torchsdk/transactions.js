@@ -219,6 +219,14 @@ const buildSellTransaction = async (connection, params) => {
     const [treasuryPda] = (0, program_1.getTokenTreasuryPda)(mint);
     const [userPositionPda] = (0, program_1.getUserPositionPda)(bondingCurvePda, seller);
     const [userStatsPda] = (0, program_1.getUserStatsPda)(seller);
+    // [V35] Optional accounts — check existence before passing (Anchor needs
+    // program ID for None, not a non-existent PDA address)
+    const [userPositionInfo, userStatsInfo] = await connection.getMultipleAccountsInfo([
+        userPositionPda,
+        userStatsPda,
+    ]);
+    const userPositionAccount = userPositionInfo ? userPositionPda : null;
+    const userStatsAccount = userStatsInfo ? userStatsPda : null;
     const bondingCurveTokenAccount = (0, spl_token_1.getAssociatedTokenAddressSync)(mint, bondingCurvePda, true, spl_token_1.TOKEN_2022_PROGRAM_ID);
     const sellerTokenAccount = (0, spl_token_1.getAssociatedTokenAddressSync)(mint, seller, false, spl_token_1.TOKEN_2022_PROGRAM_ID);
     // [V18] Vault accounts (optional — pass null when not using vault)
@@ -249,9 +257,9 @@ const buildSellTransaction = async (connection, params) => {
         bondingCurve: bondingCurvePda,
         tokenVault: bondingCurveTokenAccount,
         sellerTokenAccount,
-        userPosition: userPositionPda,
+        userPosition: userPositionAccount,
         tokenTreasury: treasuryPda,
-        userStats: userStatsPda,
+        userStats: userStatsAccount,
         torchVault: torchVaultAccount,
         vaultWalletLink: vaultWalletLinkAccount,
         vaultTokenAccount,

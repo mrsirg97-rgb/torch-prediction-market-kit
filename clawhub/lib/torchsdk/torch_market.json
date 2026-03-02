@@ -3371,6 +3371,12 @@
                 },
                 {
                     "name": "user_position",
+                    "docs": [
+                        "[V35] Optional: user_position is not read/written during sell — only",
+                        "needed for historical compatibility. Users who received tokens via",
+                        "transfer (no prior buy) can sell without this account."
+                    ],
+                    "optional": true,
                     "pda": {
                         "seeds": [
                             {

@@ -1,6 +1,6 @@
 {
   "name": "torch-prediction-market-kit",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "autonomous vault-based prediction market kit utilizing torch liquidity and lending built using the torchsdk",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

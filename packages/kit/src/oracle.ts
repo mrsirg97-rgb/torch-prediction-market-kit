@@ -9,7 +9,44 @@ import type { Oracle, PriceFeedOracle, Outcome } from './types'
 
 const COINGECKO_API = 'https://api.coingecko.com/api/v3/simple/price'
 
+const ALLOWED_ORACLE_ASSETS = new Set([
+  'solana',
+  'bitcoin',
+  'ethereum',
+  'binancecoin',
+  'ripple',
+  'cardano',
+  'dogecoin',
+  'polkadot',
+  'avalanche-2',
+  'chainlink',
+  'uniswap',
+  'litecoin',
+  'near',
+  'aptos',
+  'sui',
+  'arbitrum',
+  'optimism',
+  'celestia',
+  'jupiter-exchange-solana',
+  'render-token',
+  'bonk',
+  'jito-governance-token',
+  'raydium',
+  'pyth-network',
+  'helium',
+  'tether',
+  'usd-coin',
+])
+
 export const checkPriceFeed = async (oracle: PriceFeedOracle): Promise<Outcome> => {
+  if (!ALLOWED_ORACLE_ASSETS.has(oracle.asset)) {
+    throw new Error(
+      `oracle asset "${oracle.asset}" is not in the allowlist. ` +
+        `Allowed: ${[...ALLOWED_ORACLE_ASSETS].join(', ')}`,
+    )
+  }
+
   const url = `${COINGECKO_API}?ids=${oracle.asset}&vs_currencies=usd`
   const res = await fetch(url, { signal: AbortSignal.timeout(10_000) })
 

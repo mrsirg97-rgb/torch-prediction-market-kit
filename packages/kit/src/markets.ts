@@ -20,6 +20,46 @@ import { withTimeout } from './utils'
 
 const SDK_TIMEOUT_MS = 30_000
 
+// --- input validation allowlists ---
+
+const ALLOWED_METADATA_DOMAINS = new Set([
+  'arweave.net',
+  'www.arweave.net',
+  'gateway.irys.xyz',
+  'ipfs.io',
+  'cloudflare-ipfs.com',
+  'nftstorage.link',
+  'dweb.link',
+])
+
+const MAX_LIQUIDITY_LAMPORTS = 10_000_000_000 // 10 SOL
+
+const validateMetadataUri = (uri: string, marketId: string): void => {
+  let hostname: string
+  try {
+    hostname = new URL(uri).hostname
+  } catch {
+    throw new Error(`invalid metadataUri for market "${marketId}": ${uri}`)
+  }
+  if (!ALLOWED_METADATA_DOMAINS.has(hostname)) {
+    throw new Error(
+      `metadataUri domain "${hostname}" is not allowed for market "${marketId}". ` +
+        `Allowed: ${[...ALLOWED_METADATA_DOMAINS].join(', ')}`,
+    )
+  }
+}
+
+const validateLiquidity = (lamports: number, marketId: string): void => {
+  if (lamports < 0) {
+    throw new Error(`initialLiquidityLamports cannot be negative for market "${marketId}"`)
+  }
+  if (lamports > MAX_LIQUIDITY_LAMPORTS) {
+    throw new Error(
+      `initialLiquidityLamports ${lamports} exceeds max ${MAX_LIQUIDITY_LAMPORTS} (10 SOL) for market "${marketId}"`,
+    )
+  }
+}
+
 export const loadMarkets = (path: string): Market[] => {
   if (!fs.existsSync(path)) return []
 
@@ -41,6 +81,12 @@ export const loadMarkets = (path: string): Market[] => {
       throw new Error(`duplicate market id: "${m.id}" in ${path}`)
     }
     seen.add(m.id)
+
+    // validate inputs on pending markets (already-created markets are not re-validated)
+    if (m.status === 'pending') {
+      validateMetadataUri(m.metadataUri, m.id)
+      validateLiquidity(m.initialLiquidityLamports, m.id)
+    }
   }
 
   return markets

@@ -45,7 +45,7 @@
       {
         "id": "npm-torch-prediction-market-kit",
         "kind": "npm",
-        "package": "torch-prediction-market-kit@^2.0.1",
+        "package": "torch-prediction-market-kit@^2.0.2",
         "flags": [],
         "label": "Install Torch Prediction Market Kit (npm, optional -- SDK is bundled in lib/torchsdk/ and bot source is bundled under lib/kit on clawhub)"
       }
@@ -145,7 +145,28 @@
     "vault_instant_revocation": true,
     "transaction_expiry_seconds": 60,
     "open_source": true,
-    "sdk_audited": true
+    "sdk_audited": true,
+    "input_validation": {
+      "metadata_uri_domain_allowlist": [
+        "arweave.net",
+        "gateway.irys.xyz",
+        "ipfs.io",
+        "cloudflare-ipfs.com",
+        "nftstorage.link",
+        "dweb.link"
+      ],
+      "max_liquidity_lamports": 10000000000,
+      "max_liquidity_sol": 10,
+      "oracle_asset_allowlist": [
+        "solana", "bitcoin", "ethereum", "binancecoin", "ripple",
+        "cardano", "dogecoin", "polkadot", "avalanche-2", "chainlink",
+        "uniswap", "litecoin", "near", "aptos", "sui", "arbitrum",
+        "optimism", "celestia", "jupiter-exchange-solana", "render-token",
+        "bonk", "jito-governance-token", "raydium", "pyth-network",
+        "helium", "tether", "usd-coin"
+      ],
+      "duplicate_market_id_rejected": true
+    }
   },
   "tags": [
     "solana",
