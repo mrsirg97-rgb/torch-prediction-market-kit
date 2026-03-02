@@ -1,6 +1,6 @@
 ---
 name: torch-prediction-market-bot
-version: "2.0.2"
+version: "2.0.3"
 description: Autonomous vault-based prediction market bot for Torch Market on Solana. Creates binary prediction markets as Torch tokens — the bonding curve provides price discovery, the treasury accumulates value from trading fees, and the vault manages positions. Each market has an oracle (price feed or manual) and resolves at a deadline. The agent keypair is generated in-process -- disposable, holds nothing of value. All SOL routes through the vault. The human principal creates the vault, funds it, links the agent, and retains full control. Built on torchsdk v3.7.23 and the Torch Market protocol.
 license: MIT
 disable-model-invocation: true
@@ -39,7 +39,7 @@ metadata:
         flags: []
         label: "Install Torch Prediction Market Kit (npm, optional -- SDK is bundled in lib/torchsdk/ and bot source is bundled under lib/kit on clawhub)"
   author: torch-market
-  version: "2.0.2"
+  version: "2.0.3"
   clawhub: https://clawhub.ai/mrsirg97-rgb/torch-prediction-market-kit
   kit-source: https://github.com/mrsirg97-rgb/torch-prediction-market-kit
   website: https://torch.market
